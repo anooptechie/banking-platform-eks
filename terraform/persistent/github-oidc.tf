@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "github_assume" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:ref:refs/heads/main"]
+      values   = ["repo:anooptechie@204326701/banking-platform-eks@1460990742:ref:refs/heads/main"]
     }
   }
 }
