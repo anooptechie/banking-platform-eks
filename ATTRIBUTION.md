@@ -10,3 +10,5 @@ with the author's permission.
 Everything outside `app/` (Terraform, Helm, ArgoCD, CI, docs) is my own work.
 `docker-compose.local.yaml` and `frontend/nginx.compose.conf` are my additions to run the
 frontend under Docker Compose.
+
+Modified from upstream: `app/frontend/Dockerfile` base image bumped from nginx:1.27-alpine to nginx:1.30-alpine after Trivy reported CRITICAL findings in the older Alpine layer.
