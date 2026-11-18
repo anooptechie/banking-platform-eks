@@ -1,7 +1,7 @@
 global:
   image:
     repository: "766749599210.dkr.ecr.us-east-1.amazonaws.com/banking-platform"
-    tag: "e4257c25c07c"          # git SHA (12 chars); CI bumps this
+    tag: "ec0efab17482"          # git SHA (12 chars); CI bumps this
   secretName: banking-secrets   # holds POSTGRES_PASSWORD and JWT_SECRET (created outside Git)
 
 # Non-secret environment shared by every backend service.
