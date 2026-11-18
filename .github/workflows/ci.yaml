@@ -124,3 +124,25 @@ jobs:
           fi
           docker tag "local/${IMAGE}:${TAG}" "${REGISTRY}/${ECR_REPOSITORY}:${REMOTE_TAG}"
           docker push "${REGISTRY}/${ECR_REPOSITORY}:${REMOTE_TAG}"
+
+  bump-tag:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Point the Helm chart at the new images
+        run: |
+          TAG="${GITHUB_SHA::12}"
+          FILE=helm/banking-platform/values.yaml
+          sed -i -E "s|^(    tag: )\"[0-9a-f]{12}\"|\1\"${TAG}\"|" "$FILE"
+          grep -q "tag: \"${TAG}\"" "$FILE" || { echo "tag line not updated"; exit 1; }
+          if git diff --quiet; then echo "already at ${TAG}"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "ci: deploy images ${TAG} [skip ci]"
+          git pull --rebase origin main
+          git push origin HEAD:main
