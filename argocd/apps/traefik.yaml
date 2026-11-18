@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 42.4.1
+    helm:
+      valuesObject:
+        deployment:
+          replicas: 2
+        ingressClass:
+          enabled: true
+          isDefaultClass: true
+        service:
+          type: LoadBalancer
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-type: external
+            service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+        resources:
+          requests: { cpu: 50m, memory: 64Mi }
+          limits: { memory: 256Mi }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
