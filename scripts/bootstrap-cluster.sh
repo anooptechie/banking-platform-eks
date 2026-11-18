@@ -15,7 +15,7 @@ if ! kubectl -n banking get secret banking-secrets >/dev/null 2>&1; then
     --from-literal=JWT_SECRET="$(openssl rand -hex 32)"
 fi
 
-helm upgrade --install argocd argo/argo-cd --version "$ARGOCD_CHART_VERSION" \
+helm upgrade --install argocd argo/argo-cd --version "$ARGOCD_CHART_VERSION" -f argocd/argocd-values.yaml \
   --namespace argocd --create-namespace --wait
 
 kubectl apply -f argocd/bootstrap/root-app.yaml
