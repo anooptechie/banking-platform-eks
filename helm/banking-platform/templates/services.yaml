@@ -29,6 +29,8 @@ spec:
         checksum/common-env: {{ toJson $.Values.commonEnv | sha256sum }}
     spec:
       automountServiceAccountToken: false
+      enableServiceLinks: false
+      enableServiceLinks: false
       {{- with $psc }}
       securityContext:
         {{- toYaml . | nindent 8 }}
