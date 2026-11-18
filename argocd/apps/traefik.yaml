@@ -21,7 +21,8 @@ spec:
           enabled: true
           isDefaultClass: true
         service:
-          type: LoadBalancer
+          spec:
+            type: LoadBalancer
           annotations:
             service.beta.kubernetes.io/aws-load-balancer-type: external
             service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
