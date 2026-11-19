@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: banking-services
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames: [banking]
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: banking-platform
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: NotIn
+        values: [frontend]
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s

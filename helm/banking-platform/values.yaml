@@ -16,7 +16,10 @@ commonEnv:
   REDIS_ADDR: redis:6379
   KAFKA_ENABLED: "true"
   KAFKA_BROKERS: kafka:9094
-  OTEL_ENABLED: "false"
+  OTEL_ENABLED: "true"
+  OTEL_EXPORTER_OTLP_ENDPOINT: otel-collector.observability.svc.cluster.local:4317
+  OTEL_EXPORTER_OTLP_INSECURE: "true"
+  OTEL_TRACE_SAMPLE_RATIO: "1.0"
   JWT_ISSUER: banking-platform
   LOG_FORMAT: json
 

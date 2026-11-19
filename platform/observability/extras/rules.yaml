@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: banking-alerts
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: banking.rules
+      rules:
+        - alert: BankingDeploymentUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="banking"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "{{ $labels.deployment }} has no available replicas"
+        - alert: BankingPodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total{namespace="banking"}[10m]) > 3
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.pod }} restarted more than 3 times in 10 minutes"
+        - alert: BankingScrapeTargetDown
+          expr: up{namespace="banking"} == 0
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Prometheus cannot scrape {{ $labels.job }}"
