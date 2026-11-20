@@ -1,0 +1,41 @@
+# Disaster-recovery variant: bootstraps banking-pg from the S3 backups of the previous cluster
+# (server name banking-pg) and archives its own WAL under a new server name (banking-pg-g1).
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: banking-pg
+  namespace: banking
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+  storage:
+    size: 10Gi
+    storageClass: gp3
+  postgresql:
+    parameters:
+      max_connections: "300"
+  bootstrap:
+    recovery:
+      source: origin
+  externalClusters:
+    - name: origin
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: banking-pg-backups
+          serverName: banking-pg
+  affinity:
+    topologyKey: topology.kubernetes.io/zone
+  resources:
+    requests: { cpu: 100m, memory: 512Mi }
+    limits: { memory: 1Gi }
+  serviceAccountTemplate:
+    metadata:
+      annotations:
+        eks.amazonaws.com/role-arn: arn:aws:iam::766749599210:role/banking-platform-pg-backup
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: banking-pg-backups
+        serverName: banking-pg-g1

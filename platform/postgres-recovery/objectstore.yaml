@@ -1,0 +1,11 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: banking-pg-backups
+  namespace: banking
+spec:
+  retentionPolicy: "7d"
+  configuration:
+    destinationPath: s3://banking-platform-pg-backups-766749599210/
+    s3Credentials:
+      inheritFromIAMRole: true
