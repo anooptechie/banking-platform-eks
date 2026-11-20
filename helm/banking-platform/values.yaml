@@ -8,7 +8,7 @@ global:
 commonEnv:
   ENVIRONMENT: development
   POSTGRES_ENABLED: "true"
-  POSTGRES_HOST: postgres
+  POSTGRES_HOST: banking-pg-rw
   POSTGRES_PORT: "5432"
   POSTGRES_USER: banking
   POSTGRES_DB: banking
