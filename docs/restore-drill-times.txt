@@ -1,0 +1,6 @@
+apply start  09:59:46
+apply end    10:14:06
+bootstrap start 10:14:11
+bootstrap end   10:15:37
+db healthy      10:29:14
+app serving data 10:33:23

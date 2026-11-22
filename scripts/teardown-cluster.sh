@@ -4,6 +4,24 @@
 set -uo pipefail
 REGION="${AWS_REGION:-us-east-1}"
 
+echo ">> final backup before teardown"
+B=final-$(date +%s)
+kubectl -n banking exec $(kubectl -n banking get cluster banking-pg -o jsonpath="{.status.currentPrimary}") -c postgres -- psql -U postgres -d banking -qc "SELECT pg_switch_wal();" || true
+cat <<EOB | kubectl apply -f -
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: $B
+  namespace: banking
+spec:
+  cluster:
+    name: banking-pg
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+EOB
+kubectl -n banking wait --for=jsonpath="{.status.phase}"=completed backup/$B --timeout=300s || echo "WARNING: final backup did not complete"
+
 echo ">> deleting ArgoCD applications (cascade)"
 kubectl -n argocd delete application root --wait=true --timeout=300s
 kubectl -n argocd delete applications --all --wait=true --timeout=300s
