@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/anooptechie/banking-platform-eks.git
     targetRevision: main
-    path: platform/postgres
+    path: platform/postgres-recovery
   destination:
     server: https://kubernetes.default.svc
     namespace: banking
