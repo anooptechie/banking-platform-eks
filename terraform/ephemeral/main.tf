@@ -71,7 +71,10 @@ module "eks" {
     coredns                = {}
     eks-pod-identity-agent = { before_compute = true }
     kube-proxy             = {}
-    vpc-cni                = { before_compute = true }
+    vpc-cni = {
+      before_compute       = true
+      configuration_values = jsonencode({ enableNetworkPolicy = "true" })
+    }
     aws-ebs-csi-driver = {
       pod_identity_association = [{
         role_arn        = aws_iam_role.ebs_csi.arn

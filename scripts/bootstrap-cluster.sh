@@ -25,6 +25,7 @@ fi
 
 # Namespace and secrets are created out-of-band so no secret ever lands in Git.
 kubectl create namespace banking --dry-run=client -o yaml | kubectl apply -f -
+kubectl label namespace banking pod-security.kubernetes.io/enforce=baseline pod-security.kubernetes.io/warn=restricted pod-security.kubernetes.io/audit=restricted --overwrite
 kubectl -n banking create secret generic banking-secrets \
   --from-literal=POSTGRES_PASSWORD="$DB_PASSWORD" \
   --from-literal=JWT_SECRET="$(openssl rand -hex 32)" \
