@@ -23,7 +23,7 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: banking-pg-backups
-          serverName: banking-pg
+          serverName: banking-pg-g1
   affinity:
     topologyKey: topology.kubernetes.io/zone
   resources:
@@ -38,4 +38,4 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: banking-pg-backups
-        serverName: banking-pg-g1
+        serverName: banking-pg-g2
